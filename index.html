@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KK packaging</title>
+    <title>Reconciliation Return Sheet</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -141,7 +141,9 @@
                     billNoFR.push([row[8], row[20]]);
                 }
             });
-
+            billNoFR[0][0]="Full Return";
+            billNoFR[0][1]="";
+            
             // Remove duplicates from billNoFR
             const uniqueFR = removeDuplicates(billNoFR);
             uniqueFR.forEach(item => result.push(item));
@@ -152,6 +154,9 @@
                     billNoD.push([row[8], row[19]]);
                 }
             });
+            billNoD[0][0]="Delivered";
+            billNoD[0][1]="";
+            
 
             // Remove duplicates from billNoD
             const uniqueD = removeDuplicates(billNoD);
@@ -163,6 +168,8 @@
                     billNoPD.push([row[8], row[19]]);
                 }
             });
+            billNoPD[0][0]="Partial Delivery";
+            billNoPD[0][1]="";
 
             // Remove duplicates from billNoPD
             const uniquePD = removeDuplicates(billNoPD);
@@ -170,7 +177,7 @@
 
             // Add file name and date to the first row
             result[0][0] = rows[2][1];
-            result[0][3] = rows[2][2];;
+            result[0][3] = rows[2][2];
             outputName=rows[2][1];
             
             return result;
