@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KK packaging</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center; 
+            background-image: radial-gradient( circle 927px at 8.4% 41.9%, rgba(155,240,192,1) 3.6%, rgba(36,200,248,1) 89.9% );
+            color: white;
+            text-align:center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #fileInput {
+            margin-bottom: 20px;
+        }
+        #downloadButton {
+            display: none;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #convertButton{
+            padding: 10px 20px;
+            background-color: #2c4af0;
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius:10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #convertButton:hover{
+            padding: 10px 20px;
+            background-color: #97f897;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius:30px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #cont{
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            border: 3px solid rgb(0, 0, 0);
+            width:350px;
+            border-radius:20px;
+            padding:30px;
+            margin-top:10% ;
+            color: black;
+            background-image: linear-gradient( 121.1deg, rgba(252,217,217,1) -4.2%, rgba(255,120,120,1) 58% );
+        }
+    </style>
+</head>
+<body>
+<div id="cont">
+    <h1 style="text-align: center;background-color:white;border-radius: 8px;margin: 25px;">Return Sheet</h1>
+
+    <input type="file" id="fileInput" accept=".csv"><br>
+    <button id="convertButton" onclick="processCSV()">Convert</button>
+
+    <table id="outputTable"></table>
+
+    <button id="downloadButton" onclick="downloadCSV()">Download</button>
+</div>  
+    <script>
+        let processedData = [];
+        let outputName='';
+        
+        function processCSV() {
+            const fileInput = document.getElementById('fileInput');
+            const outputTable = document.getElementById('outputTable');
+            const downloadButton = document.getElementById('downloadButton');
+
+            if (!fileInput.files.length) {
+                alert("Please select a CSV file.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const csvData = e.target.result;
+                const rows = csvData.split('\n').map(row => row.split(','));
+
+                processedData = processData(rows);
+                displayData(processedData);
+
+                // Show the download button after processing
+                downloadButton.style.display = 'block';
+            };
+
+            reader.readAsText(file);
+        }
+
+        function processData(rows) {
+            const result = [];
+            const now = new Date();
+            const formattedDate = now.getDate()+'-'+(now.getMonth() + 1)+'-'+now.getFullYear();
+
+            // Header processing
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.length > 20 && !row[19].includes('Full Return') && !row[20].includes('Delivered')) {
+                    const myString = [row[4], row[6], row[8], row[11], row[12], row[13], row[16], row[17], row[19], row[20]];
+                    result.push(myString);
+                }
+            }
+
+            // Bottom processing for different categories (Full Return, Delivered, Partial Delivered)
+            const billNoFR = [];
+            const billNoD = [];
+            const billNoPD = [];
+
+            // Full Return processing
+            rows.forEach(row => {
+                if (row.length > 20 && !row[19].includes('Delivered') && !row[19].includes('Partial Delivery')) {
+                    billNoFR.push([row[8], row[20]]);
+                }
+            });
+
+            // Remove duplicates from billNoFR
+            const uniqueFR = removeDuplicates(billNoFR);
+            uniqueFR.forEach(item => result.push(item));
+
+            // Full Delivered processing
+            rows.forEach(row => {
+                if (row.length > 20 && !row[19].includes('Full Return') && !row[19].includes('Partial Delivery')) {
+                    billNoD.push([row[8], row[19]]);
+                }
+            });
+
+            // Remove duplicates from billNoD
+            const uniqueD = removeDuplicates(billNoD);
+            uniqueD.forEach(item => result.push(item));
+
+            // Partial Delivered processing
+            rows.forEach(row => {
+                if (row.length > 20 && !row[19].includes('Full Return') && !row[19].includes('Delivered')) {
+                    billNoPD.push([row[8], row[19]]);
+                }
+            });
+
+            // Remove duplicates from billNoPD
+            const uniquePD = removeDuplicates(billNoPD);
+            uniquePD.forEach(item => result.push(item));
+
+            // Add file name and date to the first row
+            result[0][0] = rows[2][1];
+            result[0][3] = rows[2][2];;
+            outputName=rows[2][1];
+            
+            return result;
+        }
+
+        function removeDuplicates(array) {
+            return array.filter((value, index, self) =>
+                index === self.findIndex((t) => (
+                    t[0] === value[0] && t[1] === value[1]
+                ))
+            );
+        }
+
+        function displayData(data) {
+            const outputTable = document.getElementById('outputTable');
+            outputTable.innerHTML = ''; // Clear any previous content
+
+            if (data.length === 0) {
+                outputTable.innerHTML = '<tr><td colspan="10">No data to display.</td></tr>';
+                return;
+            }
+
+            // Create table header
+            const headerRow = document.createElement('tr');
+            data[0].forEach(cell => {
+                const th = document.createElement('th');
+                th.textContent = cell;
+                headerRow.appendChild(th);
+            });
+            outputTable.appendChild(headerRow);
+
+            // Create table rows
+            data.forEach((row, index) => {
+                const tableRow = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tableRow.appendChild(td);
+                });
+                outputTable.appendChild(tableRow);
+            });
+        }
+
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            processedData.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+
+            // Create a download link
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", outputName+".csv");
+            document.body.appendChild(link);
+
+            // Trigger the download
+            link.click();
+        }
+        document.getElementById("outputTable").style.display="none";
+    </script>
+
+</body>
+</html>
+
