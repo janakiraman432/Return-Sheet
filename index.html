@@ -130,65 +130,12 @@
                 }
             }
 
-            // Bottom processing for different categories (Full Return, Delivered, Partial Delivered)
-            const billNoFR = [];
-            const billNoD = [];
-            const billNoPD = [];
-
-            // Full Return processing
-            rows.forEach(row => {
-                if (row.length > 20 && !row[19].includes('Delivered') && !row[19].includes('Partial Delivery')) {
-                    billNoFR.push([row[8], row[20]]);
-                }
-            });
-            billNoFR[0][0]="FullReturn";
-            billNoFR[0][1]="-";
-            
-            // Remove duplicates from billNoFR
-            const uniqueFR = removeDuplicates(billNoFR);
-            uniqueFR.forEach(item => result.push(item));
-
-            // Full Delivered processing
-            rows.forEach(row => {
-                if (row.length > 20 && !row[19].includes('Full Return') && !row[19].includes('Partial Delivery')) {
-                    billNoD.push([row[8], row[19]]);
-                }
-            });
-            billNoD[0][0]="Delivered";
-            billNoD[0][1]="-";
-            
-
-            // Remove duplicates from billNoD
-            const uniqueD = removeDuplicates(billNoD);
-            uniqueD.forEach(item => result.push(item));
-
-            // Partial Delivered processing
-            rows.forEach(row => {
-                if (row.length > 20 && !row[19].includes('Full Return') && !row[19].includes('Delivered')) {
-                    billNoPD.push([row[8], row[19]]);
-                }
-            });
-            billNoPD[0][0]="PartialDelivery";
-            billNoPD[0][1]="-";
-
-            // Remove duplicates from billNoPD
-            const uniquePD = removeDuplicates(billNoPD);
-            uniquePD.forEach(item => result.push(item));
-
             // Add file name and date to the first row
             result[0][0] = rows[2][1];
             result[0][3] = rows[2][2];
             outputName=rows[2][1];
             
             return result;
-        }
-
-        function removeDuplicates(array) {
-            return array.filter((value, index, self) =>
-                index === self.findIndex((t) => (
-                    t[0] === value[0] && t[1] === value[1]
-                ))
-            );
         }
 
         function displayData(data) {
