@@ -194,10 +194,11 @@
 
     function vanFilter(rows) {
         let result = [];
-        let delivery = [];
-        let pDelivery = [];
-        let FR = [];
-        let NV = [];
+        let delivery = []; // full delivery
+        let pDelivery = []; //parcial delivery
+        let FR = [];    //full return
+        let NV = [];    //not visited
+        let headL = [];    //not visited
 
         for (let i = 0; i < rows.length; i++) {
             let row = rows[i];
@@ -208,14 +209,18 @@
                 pDelivery.push([row[4], row[6]]);
             }
             if (row[6] === "Not Visited") {
-                NV.push([row[4], row[6]]);
+                NV.push([row[2],row[3],row[4],row[5],row[6], row[8],row[11],row[12],row[13]]);
             }
             if (row.length > 14 && row[14] !== "Yes" && row[6] === "Full Return") {
-                FR.push([row[4], row[8]]);
+                FR.push([row[2],row[3],row[4],row[5],row[6], row[8],row[11],row[12],row[13]]);
+            }
+            if (row.length > 14 && row[6] === "Delivery Outcome") {
+                headL.push([row[2],"Mobile",row[4],row[5],row[6], row[8],row[11],row[12],row[13]]);
             }
         }
 
-        result.push([""],...FR);
+        result.push([""],...headL);
+        result.push(...FR);
         result.push(...NV);
         result.push([""], ...delivery);
         result.push(...pDelivery);
