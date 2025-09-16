@@ -130,7 +130,7 @@
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             if (row.length > 20 && !row[19].includes('Full Return') && !row[20].includes('Delivered')) {
-                const myString = [row[4], row[6], row[8], row[11], row[12], row[13], row[16], row[17], row[19], row[20]];
+                const myString = [row[4], row[6], row[8], row[11], row[12], row[13], row[16], row[17], row[19], row[20], row[24], row[25]];
                 result.push(myString);
             }
         }
@@ -209,13 +209,13 @@
                 pDelivery.push([row[4], row[6]]);
             }
             if (row[6] === "Not Visited") {
-                NV.push([row[2],row[3],row[4],row[5],row[6], row[8],row[11],row[12],row[13]]);
+                NV.push([row[2],row[3],row[4],row[5],row[6], row[8],row[11],row[12],row[13], row[24], row[25]]);
             }
             if (row.length > 14 && row[14] !== "Yes" && row[6] === "Full Return") {
-                FR.push([row[2],row[3],row[4],row[5],row[6], row[8],row[11],row[12],row[13]]);
+                FR.push([row[2],row[3],row[4],row[5],row[6], row[8],row[11],row[12],row[13], row[24], row[25]]);
             }
             if (row.length > 14 && row[6] === "Delivery Outcome") {
-                headL.push([row[2],"Mobile",row[4],row[5],row[6], row[8],row[11],row[12],row[13]]);
+                headL.push([row[2],"Mobile",row[4],row[5],row[6], row[8],row[11],row[12],row[13], row[24], row[25]]);
             }
         }
 
