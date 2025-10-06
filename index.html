@@ -136,7 +136,13 @@
         }
 
         // Add file name and date to the first row
-        result[0][0] = rows[2][1];
+        if(rows[2][1].includes(","))
+        {
+        result[0][0] = "";
+        }
+        else{
+            result[0][0] =rows[2][1];
+        }
         result[0][3] = rows[2][2];
         outputName = rows[2][1];
 
