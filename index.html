@@ -136,14 +136,15 @@
         }
 
         // Add file name and date to the first row
-        if(rows[2][1].includes(","))
+        if(rows[2][2].includes(","))
         {
-        result[0][0] = "";
+        result[0][3] = "";
         }
         else{
-            result[0][0] =rows[2][1];
+            result[0][3] =rows[2][2];
         }
-        result[0][3] = rows[2][2];
+        result[0][3] = rows[2][2]; //de
+        result[0][0] =rows[2][1]; //ace
         outputName = rows[2][1];
 
         return result;
