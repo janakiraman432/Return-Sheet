@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loading Status</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 320px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        /* Loader animation */
+        .loader {
+            border: 6px solid rgba(255,255,255,0.3);
+            border-top: 6px solid #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        img {
+            width: 120px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .expired {
+            display: none;
+            color: #ffdddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="message">Please wait, loading...</h1>
+    <div class="loader" id="loader"></div>
+
+    <!-- Expired image -->
+    <img id="expiredImg"
+         src="https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
+         alt="Expired">
+
+    <h2 class="expired" id="expiredText"></h2>
+</div>
+
+<script>
+    setTimeout(() => {
+        document.getElementById("message").style.display = "none";
+        document.getElementById("loader").style.display = "none";
+
+        document.getElementById("expiredImg").style.display = "block";
+        document.getElementById("expiredText").style.display = "block";
+    }, 5000); // 10 seconds
+</script>
+
+</body>
+</html>
